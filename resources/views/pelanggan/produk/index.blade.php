@@ -340,7 +340,7 @@
     <div class="container py-4">
         <h2 class="text-center">Our Products</h2>
         @php
-            $kategoriList = ['Dress', 'Shirt', 'Blouse', 'Tunic', 'Outerwear', 'Skirt', 'Pants', 'One Set', 'Hijab', 'Prayer Set'];
+            $kategoriList = ['Dress', 'Shirt', 'Blouse', 'Tunic', 'Outer', 'Skirt', 'Pants', 'One Set', 'Hijab', 'Prayer Set'];
         @endphp
         <div class="category-scroll my-3">
             @foreach ($kategoriList as $kategori)

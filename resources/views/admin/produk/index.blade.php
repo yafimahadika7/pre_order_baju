@@ -139,13 +139,13 @@
                     <option value="Shirt" {{ request('filter') == 'Shirt' ? 'selected' : '' }}>Shirt</option>
                     <option value="Blouse" {{ request('filter') == 'Blouse' ? 'selected' : '' }}>Blouse</option>
                     <option value="Tunic" {{ request('filter') == 'Tunic' ? 'selected' : '' }}>Tunic</option>
-                    <option value="Outerwear" {{ request('filter') == 'Outerwear' ? 'selected' : '' }}>Outerwear</option>
+                    <option value="Outer" {{ request('filter') == 'Outer' ? 'selected' : '' }}>Outer</option>
                     <option value="Dress" {{ request('filter') == 'Dress' ? 'selected' : '' }}>Dress</option>
                     <option value="Skirt" {{ request('filter') == 'Skirt' ? 'selected' : '' }}>Skirt</option>
                     <option value="Pants" {{ request('filter') == 'Pants' ? 'selected' : '' }}>Pants</option>
                     <option value="One Set" {{ request('filter') == 'One Set' ? 'selected' : '' }}>One Set</option>
                     <option value="Prayer Set" {{ request('filter') == 'Prayer Set' ? 'selected' : '' }}>Prayer Set</option>
-                    <option value="Muslim Shirt" {{ request('filter') == 'Muslim Shirt' ? 'selected' : '' }}>Muslim Shirt</option>
+                    <option value="Hijab" {{ request('filter') == 'Hijab' ? 'selected' : '' }}>Hijab</option>
                 </select>
                 <button class="btn btn-outline-secondary" type="submit">Cari</button>
             </form>
