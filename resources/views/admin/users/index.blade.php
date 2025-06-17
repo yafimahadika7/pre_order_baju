@@ -96,7 +96,11 @@
         @if (Auth::user()->role === 'admin' || Auth::user()->role === 'operation')
             <a href="{{ route('admin.transaksi.index') }}">💳 Transaksi</a>
         @endif
-
+        
+        @if (in_array(Auth::user()->role, ['admin', 'operation']))
+            <a href="{{ route('admin.custom.index') }}">🎨 Custom Design</a>
+        @endif
+        
         @if (Auth::user()->role === 'admin' || Auth::user()->role === 'produk')
             <a href="{{ route('admin.produk.index') }}">🛍️ Produk</a>
         @endif
