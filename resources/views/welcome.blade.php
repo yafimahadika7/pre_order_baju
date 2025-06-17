@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Welcome to Bellybee</title>
@@ -25,7 +26,10 @@
         body::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: -1;
         }
@@ -68,38 +72,39 @@
         }
 
         .chat-bubble {
-                max-width: 70%;
-                padding: 8px 14px;
-                margin-bottom: 10px;
-                border-radius: 18px;
-                font-size: 14px;
-                line-height: 1.4;
-                word-wrap: break-word;
-                display: inline-block;
-            }
+            max-width: 70%;
+            padding: 8px 14px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            display: inline-block;
+        }
 
-            .chat-left {
-                background-color: #e4e6eb;
-                color: #000;
-                align-self: flex-start;
-                text-align: left;
-                border-bottom-left-radius: 0;
-            }
+        .chat-left {
+            background-color: #e4e6eb;
+            color: #000;
+            align-self: flex-start;
+            text-align: left;
+            border-bottom-left-radius: 0;
+        }
 
-            .chat-right {
-                background-color: #007bff;
-                color: #fff;
-                align-self: flex-end;
-                text-align: right;
-                margin-left: auto;
-                border-bottom-right-radius: 0;
-            }
+        .chat-right {
+            background-color: #007bff;
+            color: #fff;
+            align-self: flex-end;
+            text-align: right;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -123,72 +128,149 @@
         }
     </style>
 </head>
+
 <body>
+    @if (session('success'))
+        <div id="notifSuccess"
+            class="alert alert-success alert-dismissible fade show text-dark position-fixed top-0 start-50 translate-middle-x mt-3"
+            style="z-index:9999; width: 80%; max-width: 600px; transition: opacity 0.5s ease;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <h1 class="main-title">Welcome to <span class="fw-bold">Bellybee</span></h1>
     <p class="sub-title">Please select one of the options below:</p>
     <div class="btn-group">
         <a href="{{ route('produk.index') }}" class="btn btn-outline-light">Our Products</a>
-        <a href="{{ route('custom.index') }}" class="btn btn-outline-light">Custom Design</a>
+        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#customDesignModal">
+            Custom Design
+        </button>
     </div>
-    
+
     <!-- Bubble Chat Minimized -->
-    <button id="bubbleChat" class="btn btn-primary rounded-circle shadow position-fixed" 
-            style="bottom: 20px; right: 20px; width: 60px; height: 60px; z-index: 9999;">
-    💬
-    <span id="notifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+    <button id="bubbleChat" class="btn btn-primary rounded-circle shadow position-fixed"
+        style="bottom: 20px; right: 20px; width: 60px; height: 60px; z-index: 9999;">
+        💬
+        <span id="notifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
             style="font-size: 0.7rem; display: none;">
-        0
-    </span>
+            0
+        </span>
     </button>
 
     <!-- Modal Request Komplain -->
     <div class="modal fade" id="chatRequestModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-dark">
-        <div class="modal-header">
-            <h5 class="modal-title">🖐️ Kirim Komplain</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-            <input type="text" id="namaPelanggan" class="form-control mb-2" placeholder="Nama Anda">
-            <input type="text" id="kontakPelanggan" class="form-control mb-2" placeholder="Email atau Nomor HP">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">🖐️ Kirim Komplain</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="namaPelanggan" class="form-control mb-2" placeholder="Nama Anda">
+                    <input type="text" id="kontakPelanggan" class="form-control mb-2" placeholder="Email atau Nomor HP">
 
-            <h6 class="fw-bold">Pilih Topik Komplain</h6>
-            <div class="d-grid gap-2 mb-3">
-                <button class="btn btn-outline-secondary" onclick="pilihTopik('Barang rusak', event)">Barang rusak</button>
-                <button class="btn btn-outline-secondary" onclick="pilihTopik('Paket belum sampai', event)">Paket belum sampai</button>
-                <button class="btn btn-outline-secondary" onclick="pilihTopik('Barang yang dikirim salah', event)">Barang yang dikirim salah</button>
+                    <h6 class="fw-bold">Pilih Topik Komplain</h6>
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-outline-secondary" onclick="pilihTopik('Barang rusak', event)">Barang
+                            rusak</button>
+                        <button class="btn btn-outline-secondary"
+                            onclick="pilihTopik('Paket belum sampai', event)">Paket belum sampai</button>
+                        <button class="btn btn-outline-secondary"
+                            onclick="pilihTopik('Barang yang dikirim salah', event)">Barang yang dikirim salah</button>
+                    </div>
+
+                    <button id="btnKirimKomplain" class="btn btn-primary w-100" onclick="kirimKomplain()" disabled>Kirim
+                        Komplain</button>
+                </div>
             </div>
-
-            <button id="btnKirimKomplain" class="btn btn-primary w-100" onclick="kirimKomplain()" disabled>Kirim Komplain</button>
         </div>
-        </div>
-    </div>
     </div>
 
     <!-- Modal Chat Aktif -->
     <div class="modal fade" id="chatModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-dark">
-        <div class="modal-header">
-            <h5 class="modal-title">💬 Chat Komplain</h5>
-            <div class="d-flex gap-2">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">💬 Chat Komplain</h5>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body d-flex flex-column" id="chatModalBody" style="height: 400px;">
+                    <div id="chatContainer" class="flex-grow-1 d-flex flex-column mb-3" style="overflow-y: auto;"></div>
+                    <div class="input-group">
+                        <input type="text" id="inputPesanChat" class="form-control" placeholder="Tulis pesan...">
+                        <button class="btn btn-primary" onclick="kirimPesanChat()">Kirim</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="modal-body d-flex flex-column" id="chatModalBody" style="height: 400px;">
-            <div id="chatContainer" class="flex-grow-1 d-flex flex-column mb-3" style="overflow-y: auto;"></div>
-            <div class="input-group">
-            <input type="text" id="inputPesanChat" class="form-control" placeholder="Tulis pesan...">
-            <button class="btn btn-primary" onclick="kirimPesanChat()">Kirim</button>
-            </div>
-        </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="customDesignModal" tabindex="-1" aria-labelledby="customDesignModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content text-dark">
+                <form method="POST" action="{{ route('custom.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">🧵 Form Custom Design</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Step 1 -->
+                        <div id="step1">
+                            <div class="mb-2">
+                                <label for="kategori">Kategori</label>
+                                <select name="kategori" id="kategori" class="form-select" required>
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="dress">Dress</option>
+                                    <option value="oneset">One Set</option>
+                                    <option value="shirt">Shirt</option>
+                                    <option value="blouse">Blouse</option>
+                                    <option value="pants">Pants</option>
+                                    <option value="skirt">Skirt</option>
+                                    <option value="blazer">Blazer</option>
+                                    <option value="tunic">Tunic</option>
+                                    <option value="kebaya">Kebaya</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label>Nama</label>
+                                <input type="text" name="nama" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label>Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label>WhatsApp</label>
+                                <input type="text" name="wa" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label>Upload Desain <span class="text-danger">*</span></label>
+                                <input type="file" name="file_desain" class="form-control" accept=".jpg,.jpeg,.png,.pdf"
+                                    required>
+                            </div>
+                            <button type="button" class="btn btn-primary mt-3" onclick="nextStep()">Next</button>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div id="step2" style="display: none;">
+                            <div id="ukuranContainer"></div>
+                            <button type="button" class="btn btn-secondary mt-3" onclick="prevStep()">Back</button>
+                            <button type="submit" class="btn btn-success mt-3">Kirim</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // ========== VARIABEL GLOBAL ==========
@@ -209,7 +291,7 @@
                 }
             });
 
-            window.pilihTopik = function(topik, event) {
+            window.pilihTopik = function (topik, event) {
                 topikKomplain = topik;
                 document.querySelectorAll('.btn-outline-secondary').forEach(btn => btn.classList.remove('active'));
                 event.target.classList.add('active');
@@ -242,31 +324,31 @@
                         topik: topikKomplain
                     })
                 })
-                .then(res => res.json())
-                .then(res => {
-                    console.log('Respon dari server:', res);
+                    .then(res => res.json())
+                    .then(res => {
+                        console.log('Respon dari server:', res);
 
-                    if (res.komplain && res.komplain.id) {
-                        komplainId = res.komplain.id;
-                        localStorage.setItem('komplainId', res.komplain.id);
-                        localStorage.setItem('chatMinimized', 'false');
+                        if (res.komplain && res.komplain.id) {
+                            komplainId = res.komplain.id;
+                            localStorage.setItem('komplainId', res.komplain.id);
+                            localStorage.setItem('chatMinimized', 'false');
 
-                        bootstrap.Modal.getInstance(document.getElementById('chatRequestModal')).hide();
-                        new bootstrap.Modal(document.getElementById('chatModal')).show();
+                            bootstrap.Modal.getInstance(document.getElementById('chatRequestModal')).hide();
+                            new bootstrap.Modal(document.getElementById('chatModal')).show();
 
-                        document.getElementById('bubbleChat').style.display = 'none';
-                        isMinimized = false;
+                            document.getElementById('bubbleChat').style.display = 'none';
+                            isMinimized = false;
 
-                        loadChat();
-                        mulaiPollingChat();
-                    } else {
-                        alert('Gagal memulai chat komplain.');
-                    }
-                })
-                .catch(err => {
-                    console.error('Gagal kirim komplain:', err);
-                    alert('Terjadi kesalahan saat mengirim komplain.');
-                });
+                            loadChat();
+                            mulaiPollingChat();
+                        } else {
+                            alert('Gagal memulai chat komplain.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Gagal kirim komplain:', err);
+                        alert('Terjadi kesalahan saat mengirim komplain.');
+                    });
             };
 
             window.kirimPesanChat = function () {
@@ -329,7 +411,7 @@
 
             const chatModalElement = document.getElementById('chatModal');
             const chatModalInstance = bootstrap.Modal.getOrCreateInstance(chatModalElement);
-            
+
             function toggleMinimizeChat() {
                 const bubbleChat = document.getElementById('bubbleChat');
                 const notif = document.getElementById('notifCount');
@@ -411,6 +493,93 @@
             });
         });
     </script>
+
+    <script>
+        function nextStep() {
+            const kategori = document.getElementById('kategori').value;
+            if (!kategori) return alert('Pilih kategori terlebih dahulu');
+
+            // Tampilkan step 2
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+
+            // Tampilkan form ukuran
+            tampilkanFormUkuran(kategori);
+        }
+
+        function prevStep() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+        }
+
+        function buatField(label, name) {
+            return `
+      <div class="mb-2">
+        <label>${label}</label>
+        <input type="text" name="ukuran[${name}]" class="form-control">
+      </div>
+    `;
+        }
+
+        function tampilkanFormUkuran(kategori) {
+            const container = document.getElementById('ukuranContainer');
+            let fields = [];
+
+            if (kategori === 'dress') {
+                fields = [
+                    'lingkar_badan', 'lingkar_pinggang', 'lingkar_panggul', 'lingkar_dada',
+                    'lebar_punggung', 'panjang_punggung', 'bahu', 'jarak_bustie',
+                    'lingkar_kerung_lengan', 'lingkar_lengan', 'panjang_lengan', 'panjang_dress'
+                ];
+            } else if (kategori === 'oneset') {
+                fields = [
+                    'lingkar_badan', 'lingkar_pinggang', 'lingkar_panggul', 'lingkar_dada',
+                    'lebar_punggung', 'panjang_punggung', 'bahu', 'jarak_bustie',
+                    'lingkar_kerung_lengan', 'lingkar_lengan', 'panjang_lengan', 'panjang_baju',
+                    'lingkar_paha', 'pesak', 'lingkar_lutut', 'panjang_bawahan'
+                ];
+            } else if (kategori === 'shirt' || kategori === 'blouse') {
+                fields = [
+                    'lingkar_badan', 'lingkar_pinggang', 'lingkar_panggul', 'lingkar_dada',
+                    'lebar_punggung', 'panjang_punggung', 'bahu', 'jarak_bustie',
+                    'lingkar_kerung_lengan', 'lingkar_lengan', 'panjang_lengan', 'panjang_baju'
+                ];
+            } else if (kategori === 'pants' || kategori === 'skirt') {
+                fields = [
+                    'lingkar_pinggang', 'lingkar_paha', 'pesak',
+                    'lingkar_lutut', 'lingkar_kaki_bawah', 'panjang_celana_rok'
+                ];
+            } else if (kategori === 'kebaya') {
+                fields = [
+                    'lingkar_badan', 'lingkar_pinggang', 'lingkar_panggul', 'lebar_punggung',
+                    'lebar_dada', 'panjang_punggung', 'bahu', 'jarak_bustie',
+                    'lingkar_kerung_lengan', 'lingkar_lengan', 'panjang_lengan', 'panjang_kebaya'
+                ];
+            }
+
+            container.innerHTML = fields.map(f => buatField(f.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), f)).join('');
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const notif = document.getElementById('notifSuccess');
+            if (notif) {
+                setTimeout(() => {
+                    // Trigger fade out
+                    notif.classList.remove('show');
+                    notif.classList.add('fade');
+                    notif.style.opacity = '0';
+
+                    // Hapus dari DOM setelah animasi
+                    setTimeout(() => {
+                        notif.remove();
+                    }, 500); // sesuai durasi transition Bootstrap
+                }, 3000); // tampil selama 3 detik
+            }
+        });
+    </script>
+
 </body>
 
 </html>

@@ -112,6 +112,10 @@
             <a href="{{ route('admin.transaksi.index') }}">💳 Transaksi</a>
         @endif
 
+        @if (in_array(Auth::user()->role, ['admin', 'operation']))
+            <a href="{{ route('admin.custom.index') }}">🎨 Custom Design</a>
+        @endif
+        
         @if (in_array(Auth::user()->role, ['admin', 'produk']))
             <a href="{{ route('admin.produk.index') }}">🛍️ Produk</a>
         @endif

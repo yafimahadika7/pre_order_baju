@@ -26,6 +26,7 @@ use App\Mail\ResiPengirimanEmail;
 use App\Models\Transaksi;
 use App\Exports\TransaksiExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Admin\CustomAdminController;
 
 Route::get('/', fn() => view('company'))->name('beranda');
 
@@ -70,6 +71,13 @@ Route::middleware(['auth', 'role:admin,operation'])->prefix('admin')->name('admi
     Route::get('/transaksi/{id}/edit', [AdminTransaksiController::class, 'edit'])->name('transaksi.edit');
     Route::put('/transaksi/{id}', [AdminTransaksiController::class, 'update'])->name('transaksi.update');
     Route::get('/transaksi/export', fn(Request $request) => Excel::download(new TransaksiExport($request), 'daftar_transaksi.xlsx'))->name('transaksi.export');
+    // ✅ Custom Design (admin & operation)
+    Route::get('/custom', function () {
+        return view('admin.custom.custom');
+    })->name('custom.index');
+
+    Route::post('/custom/{id}/ubah-status', [\App\Http\Controllers\Admin\CustomAdminController::class, 'ubahStatus'])->name('custom.ubah_status');
+    Route::post('/custom/download-pdf', [\App\Http\Controllers\Admin\CustomAdminController::class, 'downloadPdf'])->name('custom.download_pdf');
 });
 
 // ✅ Penjualan (admin & finance)
@@ -81,6 +89,7 @@ Route::middleware(['auth', 'role:admin,finance'])->prefix('admin')->name('admin.
 // ✅ Pelanggan (publik)
 Route::get('/produk', [PelangganProdukController::class, 'index'])->name('produk.index');
 Route::get('/custom', [CustomController::class, 'index'])->name('custom.index');
+Route::post('/custom', [CustomController::class, 'store'])->name('custom.store');
 Route::get('/keranjang', fn() => view('pelanggan.keranjang.index'))->name('keranjang.index');
 Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
 
@@ -121,6 +130,7 @@ Route::middleware(['auth', 'role:admin,operation'])->prefix('admin')->name('admi
     Route::get('/tiketing/{id}', [TiketingController::class, 'show'])->name('tiketing.show');
     Route::post('/tiketing/{id}/reply', [TiketingController::class, 'reply'])->name('tiketing.reply');
     Route::post('/tiketing/{id}/close', [TiketingController::class, 'close'])->name('tiketing.close');
+    Route::get('/custom', [CustomController::class, 'adminView'])->name('custom.index');
 });
 
 Route::get('/tracking/{resi}', [App\Http\Controllers\TrackingController::class, 'show'])->name('tracking.show');
