@@ -22,6 +22,11 @@
             animation: fadeInBody 1s ease forwards;
         }
 
+        input[type="checkbox"] {
+            -webkit-appearance: auto !important;
+            appearance: auto !important;
+        }
+
         .chat-bubble {
             max-width: 70%;
             padding: 8px 14px;
@@ -31,6 +36,13 @@
             line-height: 1.4;
             word-wrap: break-word;
             display: inline-block;
+        }
+
+        .item-checkbox {
+            position: relative;
+            z-index: 1000;
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         .chat-left {
@@ -97,6 +109,7 @@
             object-fit: cover;
             border-radius: 10px;
             margin-right: 1rem;
+            pointer-events: none;
         }
 
         .produk-info {
@@ -353,13 +366,27 @@
             const items = JSON.parse(localStorage.getItem('keranjang')) || [];
             keranjangList.innerHTML = '';
             let total = 0;
+            let updated = false;
 
             items.forEach((item, index) => {
+                // Inisialisasi item.checked jika belum ada
+                if (item.checked === undefined) {
+                    item.checked = true;
+                    updated = true;
+                }
+
+                // Hitung total hanya jika item dicentang
+                if (item.checked) {
+                    total += item.harga * item.jumlah;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'produk-card';
-                total += item.harga * item.jumlah;
+
                 card.innerHTML = `
-                    <input type="checkbox" class="form-check-input me-3 item-checkbox" data-index="${index}" checked>
+                    <label class="me-3 mb-0">
+                        <input type="checkbox" class="form-check-input item-checkbox" data-index="${index}" ${item.checked ? 'checked' : ''}>
+                    </label>
                     <img src="${item.gambar}" class="produk-img">
                     <div class="produk-info">
                         <strong>${item.nama}</strong><br>
@@ -371,13 +398,77 @@
                         <button class="btn btn-sm btn-outline-secondary btn-minus me-1" data-index="${index}">-</button>
                         <span class="mx-1">${item.jumlah}</span>
                         <button class="btn btn-sm btn-outline-secondary btn-plus ms-1" data-index="${index}">+</button>
+                        <button class="btn btn-sm btn-outline-danger btn-delete ms-3" data-index="${index}">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </div>
                 `;
+
                 keranjangList.appendChild(card);
+            });
+
+            // Simpan ke localStorage jika ada perubahan struktur
+            if (updated) {
+                localStorage.setItem('keranjang', JSON.stringify(items));
+            }
+
+            // Tampilkan total harga akhir
+            totalHarga.textContent = 'Rp' + total.toLocaleString('id-ID');
+        }
+
+        function updateTotalHarga() {
+            const items = JSON.parse(localStorage.getItem('keranjang')) || [];
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            let total = 0;
+
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    total += items[index].harga * items[index].jumlah;
+                }
             });
 
             totalHarga.textContent = 'Rp' + total.toLocaleString('id-ID');
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderKeranjang();
+
+            // Event untuk update total saat centang/uncheck
+            document.getElementById('keranjangList').addEventListener('change', function (e) {
+                if (e.target.classList.contains('item-checkbox')) {
+                    const index = parseInt(e.target.dataset.index);
+                    const items = JSON.parse(localStorage.getItem('keranjang')) || [];
+
+                    items[index].checked = e.target.checked;
+                    localStorage.setItem('keranjang', JSON.stringify(items));
+
+                    updateTotalHarga();
+                }
+            });
+
+            // Event untuk tombol + dan -
+            document.getElementById('keranjangList').addEventListener('click', function (e) {
+                const items = JSON.parse(localStorage.getItem('keranjang')) || [];
+                const index = parseInt(e.target.dataset.index);
+
+                if (e.target.classList.contains('btn-plus')) {
+                    items[index].jumlah++;
+                } else if (e.target.classList.contains('btn-minus')) {
+                    if (items[index].jumlah > 1) items[index].jumlah--;
+                } else if (e.target.classList.contains('btn-delete') || e.target.closest('.btn-delete')) {
+                    const btn = e.target.closest('.btn-delete');
+                    const deleteIndex = parseInt(btn.dataset.index);
+                    items.splice(deleteIndex, 1); // hapus dari array
+                }
+
+                localStorage.setItem('keranjang', JSON.stringify(items));
+                renderKeranjang();
+                updateTotalHarga();
+            });
+
+            // Perhitungan awal
+            updateTotalHarga();
+        });
 
         document.getElementById('btnBeli').addEventListener('click', () => {
             const items = JSON.parse(localStorage.getItem('keranjang')) || [];
@@ -435,9 +526,6 @@
                 });
         });
 
-
-
-        document.addEventListener('DOMContentLoaded', renderKeranjang);
 
         function tutupResultAlert() {
             document.getElementById('resultAlert').style.display = 'none';
